@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Spinner
+        android:id="@+id/constraint_note"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edt_note_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="Course Title"
+        android:inputType="textMultiLine"
+        app:layout_constraintEnd_toEndOf="@+id/constraint_note"
+        app:layout_constraintStart_toStartOf="@+id/constraint_note"
+        app:layout_constraintTop_toBottomOf="@id/constraint_note" />
+
+    <EditText
+        android:id="@+id/edt_note_body"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="Note Body"
+        android:inputType="textMultiLine"
+        app:layout_constraintEnd_toEndOf="@+id/edt_note_title"
+        app:layout_constraintStart_toStartOf="@+id/edt_note_title"
+        app:layout_constraintTop_toBottomOf="@+id/edt_note_title" />
+</android.support.constraint.ConstraintLayout>
