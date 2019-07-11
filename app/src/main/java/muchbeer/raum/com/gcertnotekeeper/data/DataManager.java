@@ -1,11 +1,19 @@
 package muchbeer.raum.com.gcertnotekeeper.data;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import muchbeer.raum.com.gcertnotekeeper.datahouse.NoteDatabaseContract;
+import muchbeer.raum.com.gcertnotekeeper.datahouse.NoteOpenHelper;
 
 public class DataManager {
 
     private static DataManager ourInstance = null;
+
 
     private List<CourseInfo> mCourses = new ArrayList<>();
     private List<NoteInfo> mNotes = new ArrayList<>();
@@ -13,12 +21,70 @@ public class DataManager {
     public static DataManager getInstance() {
         if(ourInstance == null) {
             ourInstance = new DataManager();
-            ourInstance.initializeCourses();
-            ourInstance.initializeExampleNotes();
+          //  ourInstance.initializeCourses();
+         //   ourInstance.initializeExampleNotes();
         }
         return ourInstance;
     }
 
+    public static void loadFromDatabase(NoteOpenHelper mDbOpenHelper) {
+        SQLiteDatabase db = mDbOpenHelper.getReadableDatabase();
+        final String[] courseColumns = {
+                NoteDatabaseContract.CourseInfoEntry.COLUMN_COURSE_ID,
+                NoteDatabaseContract.CourseInfoEntry.COLUMN_COURSE_TITLE};
+
+        final Cursor courseCursor = db.query(NoteDatabaseContract.CourseInfoEntry.TABLE_NAME, courseColumns,
+                null, null, null, null, NoteDatabaseContract.CourseInfoEntry.COLUMN_COURSE_TITLE + " DESC");
+        loadCoursesFromDatabase(courseCursor);
+
+        final String[] noteColumns = {
+                NoteDatabaseContract.NoteInfoEntry.COLUMN_NOTE_TITLE,
+                NoteDatabaseContract.NoteInfoEntry.COLUMN_NOTE_TEXT,
+                NoteDatabaseContract.NoteInfoEntry.COLUMN_COURSE_ID,
+                NoteDatabaseContract.NoteInfoEntry._ID};
+        String noteOrderBy = NoteDatabaseContract.NoteInfoEntry.COLUMN_COURSE_ID + "," + NoteDatabaseContract.NoteInfoEntry.COLUMN_NOTE_TITLE;
+        final Cursor noteCursor = db.query(NoteDatabaseContract.NoteInfoEntry.TABLE_NAME, noteColumns,
+                null, null, null, null, noteOrderBy);
+        loadNotesFromDatabase(noteCursor);
+    }
+private static void loadNotesFromDatabase(Cursor cursor) {
+
+    int noteTitlePos = cursor.getColumnIndex(NoteDatabaseContract.NoteInfoEntry.COLUMN_NOTE_TITLE);
+    int noteTextPos = cursor.getColumnIndex(NoteDatabaseContract.NoteInfoEntry.COLUMN_NOTE_TEXT);
+    int courseIdPos = cursor.getColumnIndex(NoteDatabaseContract.NoteInfoEntry.COLUMN_COURSE_ID);
+    int idPos = cursor.getColumnIndex(NoteDatabaseContract.NoteInfoEntry._ID);
+
+    DataManager dm = getInstance();
+    dm.mNotes.clear();
+    while(cursor.moveToNext()) {
+        String noteTitle = cursor.getString(noteTitlePos);
+        String noteText = cursor.getString(noteTextPos);
+        String courseId = cursor.getString(courseIdPos);
+        int id = cursor.getInt(idPos);
+
+        CourseInfo noteCourse = dm.getCourse(courseId);
+        NoteInfo note = new NoteInfo(id, noteCourse, noteTitle, noteText);
+        dm.mNotes.add(note);
+    }
+    cursor.close();
+
+}
+
+    private static void loadCoursesFromDatabase(Cursor cursor) {
+        int courseIdPos = cursor.getColumnIndex(NoteDatabaseContract.CourseInfoEntry.COLUMN_COURSE_ID);
+        int courseTitlePos = cursor.getColumnIndex(NoteDatabaseContract.CourseInfoEntry.COLUMN_COURSE_TITLE);
+
+        DataManager dm = getInstance();
+        dm.mCourses.clear();
+        while(cursor.moveToNext()) {
+            String courseId = cursor.getString(courseIdPos);
+            String courseTitle = cursor.getString(courseTitlePos);
+            CourseInfo course = new CourseInfo(courseId, courseTitle, null);
+
+            dm.mCourses.add(course);
+        }
+        cursor.close();
+    }
     public String getCurrentUserName() {
         return "muchbeer";
     }
