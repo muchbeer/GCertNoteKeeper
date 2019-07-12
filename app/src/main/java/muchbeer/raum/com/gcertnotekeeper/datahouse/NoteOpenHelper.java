@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 public class NoteOpenHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "NoteKeeper.db";
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
     public NoteOpenHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -28,7 +28,7 @@ public class NoteOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if(oldVersion < 3) {
+        if(oldVersion < 2) {
             db.execSQL(NoteDatabaseContract.CourseInfoEntry.SQL_CREATE_INDEX1);
             db.execSQL(NoteDatabaseContract.NoteInfoEntry.SQL_CREATE_INDEX1);
         }

@@ -15,6 +15,7 @@ import java.util.List;
 import muchbeer.raum.com.gcertnotekeeper.NoteActivity;
 import muchbeer.raum.com.gcertnotekeeper.R;
 import muchbeer.raum.com.gcertnotekeeper.datahouse.NoteDatabaseContract;
+import muchbeer.raum.com.gcertnotekeeper.datahouse.NoteDatabaseContract.CourseInfoEntry;
 import muchbeer.raum.com.gcertnotekeeper.datahouse.NoteDatabaseContract.NoteInfoEntry;
 
 /**
@@ -41,7 +42,6 @@ public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapte
 
         mContext = context;
         mCursor = cursor;
-
         mLayoutInflater = LayoutInflater.from(mContext);
         populateColumnPositions();
 
@@ -49,7 +49,8 @@ public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapte
 
     public void changeCursor(Cursor cursor) {
         if(mCursor != null)
-            mCursor.close();
+          //  mCursor.close();
+            return;
         mCursor = cursor;
         populateColumnPositions();
         notifyDataSetChanged();
@@ -59,7 +60,7 @@ public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapte
         if(mCursor == null)
             return;
         // Get column indexes from mCursor
-        mCoursePos = mCursor.getColumnIndex(NoteDatabaseContract.CourseInfoEntry.COLUMN_COURSE_TITLE);
+        mCoursePos = mCursor.getColumnIndex(CourseInfoEntry.COLUMN_COURSE_TITLE);
         mNoteTitlePos = mCursor.getColumnIndex(NoteInfoEntry.COLUMN_NOTE_TITLE);
         mIdPos = mCursor.getColumnIndex(NoteInfoEntry._ID);
     }
@@ -89,7 +90,13 @@ public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapte
 
     @Override
     public int getItemCount() {
-        return mCursor == null ? 0 : mCursor.getCount();
+
+        int count = mCursor.getCount();
+       // count.close();
+
+// return count
+      //  mCursor == null ? 0 : mCursor.getCount();
+        return  mCursor == null ? 0 : mCursor.getCount();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

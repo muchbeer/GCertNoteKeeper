@@ -17,6 +17,8 @@ import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.provider.BaseColumns;
 import android.view.View;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -40,6 +42,9 @@ import muchbeer.raum.com.gcertnotekeeper.data.SettingsActivity;
 import muchbeer.raum.com.gcertnotekeeper.datahouse.NoteDatabaseContract.CourseInfoEntry;
 import muchbeer.raum.com.gcertnotekeeper.datahouse.NoteDatabaseContract.NoteInfoEntry;
 import muchbeer.raum.com.gcertnotekeeper.datahouse.NoteOpenHelper;
+import muchbeer.raum.com.gcertnotekeeper.datahouse.NoteProviderContract;
+import muchbeer.raum.com.gcertnotekeeper.datahouse.NoteProviderContract.Courses;
+import muchbeer.raum.com.gcertnotekeeper.datahouse.NoteProviderContract.Notes;
 
 
 public class NavigatActivity extends AppCompatActivity
@@ -108,7 +113,9 @@ public class NavigatActivity extends AppCompatActivity
 //loadNotes();
      //   mNoteRecyclerAdapter.notifyDataSetChanged();
       //  getLoaderManager().restartLoader(LOADER_NOTES, null, NavigatActivity.this);
-        getLoaderManager().restartLoader(LOADER_NOTES,null, (android.app.LoaderManager.LoaderCallbacks<Object>) this);
+      //  getLoaderManager().restartLoader(LOADER_NOTES,null, (android.app.LoaderManager.LoaderCallbacks<Object>) this);
+        LoaderManager.getInstance(this).restartLoader(LOADER_NOTES, null, this);
+
         updateNavHeader();
     }
 
@@ -298,13 +305,28 @@ public class NavigatActivity extends AppCompatActivity
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         CursorLoader loader = null;
+        final String[] noteColumns = {
+                Notes._ID,
+                Notes.COLUMN_NOTE_TITLE,
+                // NoteInfoEntry.getQName(NoteInfoEntry.COLUMN_COURSE_ID),
+                Courses.COLUMN_COURSE_TITLE
+        };
+
+
+
+        final String noteOrderBy = Courses.COLUMN_COURSE_TITLE +
+                "," + Notes.COLUMN_NOTE_TITLE;
         if(id == LOADER_NOTES) {
-            loader = new CursorLoader(this) {
+
+            loader = new CursorLoader(this, Notes.CONTENT_EXPANDED_URI, noteColumns,
+                    null, null, noteOrderBy);
+
+     /*       loader = new CursorLoader(this) {
                 @Override
                 public Cursor loadInBackground() {
                     SQLiteDatabase db = mDbOpenHelper.getReadableDatabase();
                     final String[] noteColumns = {
-                           // NoteInfoEntry.getQName(NoteInfoEntry._ID),
+                            NoteInfoEntry.getQName(NoteInfoEntry._ID),
                             NoteInfoEntry.COLUMN_NOTE_TITLE,
                            // NoteInfoEntry.getQName(NoteInfoEntry.COLUMN_COURSE_ID),
                             CourseInfoEntry.COLUMN_COURSE_TITLE
@@ -322,7 +344,7 @@ public class NavigatActivity extends AppCompatActivity
                     return db.query(tablesWithJoin, noteColumns,
                             null, null, null, null, noteOrderBy);
                 }
-            };
+            };*/
         }
         return loader;
     }

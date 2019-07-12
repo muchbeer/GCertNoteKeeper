@@ -2,6 +2,7 @@ package muchbeer.raum.com.gcertnotekeeper.datahouse;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class DatabaseDataSample {
 
@@ -34,6 +35,7 @@ public class DatabaseDataSample {
         values.put(NoteDatabaseContract.NoteInfoEntry.COLUMN_NOTE_TEXT, text);
 
         long newRowId = mDb.insert(NoteDatabaseContract.NoteInfoEntry.TABLE_NAME, null, values);
+        Log.d("SAMPLE DATA", String.valueOf(newRowId));
     }
 
     public void insertSampleNotes() {
