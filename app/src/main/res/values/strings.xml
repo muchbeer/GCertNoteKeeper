@@ -129,4 +129,5 @@
         viverra rhoncus sit amet nec magna. Donec lacinia ligula at libero volutpat volutpat nec nec
         tortor.
     </string>
+    <string name="error_data_message">No internet connection</string>
 </resources>
