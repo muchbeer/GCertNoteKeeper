@@ -130,4 +130,10 @@
         tortor.
     </string>
     <string name="error_data_message">No internet connection</string>
+    <string name="hint_publisher">Publisher</string>
+    <string name="hint_author">Author</string>
+    <string name="hint_title">Title</string>
+    <string name="hint_isbn">etISBN</string>
+    <string name="search">SearchBooks</string>
+    <string name="no_search_data">No data found please try again</string>
 </resources>
